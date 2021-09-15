@@ -59,6 +59,17 @@ app.post("/index", function(req, res){
     });
 });
 
+// SHOW ROUTE
+app.get('/index/:id', function(req, res){
+    Blog.findById(req.params.id, function(err, foundBlog){
+        if(err){
+            res.redirect('/blogs');
+        } else {
+            res.render('show', {blog: foundBlog})
+        }
+    })
+})
+
 // app.post('/index', function(req, res){
 //     Blog.create({
 //         title: 'Blog Post 1',
