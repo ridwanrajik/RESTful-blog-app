@@ -97,6 +97,18 @@ app.put("/index/:id", function(req, res){
     });
 });
 
+// DELETE ROUTE
+app.delete("/index/:id", function(req,res){
+    // destroy blog
+    Blog.findByIdAndRemove(req.params.id, function(err){
+        if(err){
+            res.redirect('/index');
+        } else {
+            res.redirect('/index');
+        }
+    })
+});
+
 // app.post('/index', function(req, res){
 //     Blog.create({
 //         title: 'Blog Post 1',
