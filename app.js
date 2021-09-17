@@ -1,5 +1,6 @@
-let bodyParser  = require('body-parser'),
-methodOverride = require('method-override'),
+let bodyParser  = require('body-parser'),  // body-parser parses the object entered via the POST form 
+methodOverride = require('method-override'),  // method-override provide work around for PUT and DELETE functionality
+expressSanitizer = require('express-sanitizer'), //express-sanitizer helps to prevent running JavaScript code from the blog content while creating new blog
 mongoose    = require('mongoose'),
 express = require('express'),
 app = express();
@@ -9,6 +10,7 @@ mongoose.connect('mongodb://localhost/RESTful-blog-app');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended : true}));
+app.use(expressSanitizer()); //this must come after body parser
 app.use(methodOverride('_method'));
 
 
@@ -54,6 +56,7 @@ app.get('/index/new', function(req, res){
 // CREATE ROUTE
 app.post("/index", function(req, res){
     // create blog
+    req.body.blog.body = req.sanitize(req.body.blog.body)  //sanitize function comes from express-sanitizer above  
     Blog.create(req.body.blog, function(err, newBlog){
         if(err){
             res.render("new")
@@ -88,6 +91,7 @@ app.get("/index/:id/edit", function(req, res){
 
 //UPDATE ROUTE
 app.put("/index/:id", function(req, res){
+    req.body.blog.body = req.sanitize(req.body.blog.body)    //sanitize function comes from express-sanitizer above  
     Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog){
         if(err){
             res.redirect('/index');
