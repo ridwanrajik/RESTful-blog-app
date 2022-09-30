@@ -6,7 +6,15 @@ express = require('express'),
 app = express();
 
 // APP CONFIG
-mongoose.connect('mongodb://localhost/RESTful-blog-app');
+mongoose.connect('mongodb://localhost/RESTful-blog-app', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true 
+}).then( () => {
+    console.log('Connected to database ')
+})
+.catch( (err) => {
+    console.error(`Error connecting to the database. \n${err}`);
+});
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended : true}));
@@ -24,6 +32,8 @@ let blogSchema = new mongoose.Schema({
 })
 
 let Blog = mongoose.model('blog', blogSchema )
+
+let port = process.env.port || 3000;
 
 // Blog.create({
 //     title: 'Blog Post 1',
@@ -128,6 +138,6 @@ app.delete("/index/:id", function(req,res){
 //     })
 // })
 
-app.listen(process.env.port || 3000, function(){
-    console.log('RESTful-blog-app server have started!');
+app.listen(port, function(){
+    console.log(`RESTful-blog-app server have started on port ${port}!`);
 })
